@@ -2,7 +2,7 @@
 
 #include "scenario.h"
 
-#include "work/mybspline.h"
+#include "work/closedsubdivisioncurve.h"
 // hidmanager
 #include "hidmanager/defaulthidmanager.h"
 
@@ -73,21 +73,50 @@ void Scenario::initializeScenario()
   ptom->insert(ptrack2); */
 
 
-  // Create the control points
-  auto controlPoints = GMlib::DVector<GMlib::Vector<float, 3>>(5, GMlib::Vector<float, 3>(0.0f, 0.0f, 0.0f));
-  controlPoints[0] = GMlib::Vector<float, 3>(-1.0f, 0.0f,  0.0f);
-  controlPoints[1] = GMlib::Vector<float, 3>(-0.5f, 2.0f,  0.0f);
-  controlPoints[2] = GMlib::Vector<float, 3>( 0.0f, 0.5f,  0.0f);
-  controlPoints[3] = GMlib::Vector<float, 3>( 0.5f, -1.0f, 0.0f);
-  controlPoints[4] = GMlib::Vector<float, 3>( 1.0f, 0.0f,  0.0f);
+  // First rectangle shape (centered vertically at y = 0)
+  {
+    float offsetY = 0.0f;
+    GMlib::DVector<GMlib::Vector<float, 3>> rectPoints(4, GMlib::Vector<float, 3>(0.0f, 0.0f, 0.0f));
+    rectPoints[0] = GMlib::Vector<float, 3>(-1.0f, offsetY - 1.0f, 0.0f);
+    rectPoints[1] = GMlib::Vector<float, 3>( 1.0f, offsetY - 1.0f, 0.0f);
+    rectPoints[2] = GMlib::Vector<float, 3>( 1.0f, offsetY + 1.0f, 0.0f);
+    rectPoints[3] = GMlib::Vector<float, 3>(-1.0f, offsetY + 1.0f, 0.0f);
 
-  // Create B-spline curve
-  auto myBspline = new MyB_spline(controlPoints);
-  myBspline->toggleDefaultVisualizer();
-  myBspline->sample(100);
+    auto rect1 = new ClosedSubdivisionCurve(rectPoints, 4);
+    rect1->toggleDefaultVisualizer();
+    rect1->sample(500);
+    this->scene()->insert(rect1);
+  }
 
-  // Add to scene
-  this->scene()->insert(myBspline);
+  // Second rectangle shape (shifted up by 2 along the y axis)
+  {
+    float offsetY = 3.0f;
+    GMlib::DVector<GMlib::Vector<float, 3>> rectPoints(4, GMlib::Vector<float, 3>(0.0f, 0.0f, 0.0f));
+    rectPoints[0] = GMlib::Vector<float, 3>(-1.0f, offsetY - 1.0f, 0.0f);
+    rectPoints[1] = GMlib::Vector<float, 3>( 1.0f, offsetY - 1.0f, 0.0f);
+    rectPoints[2] = GMlib::Vector<float, 3>( 1.0f, offsetY + 1.0f, 0.0f);
+    rectPoints[3] = GMlib::Vector<float, 3>(-1.0f, offsetY + 1.0f, 0.0f);
+
+    auto rect2 = new ClosedSubdivisionCurve(rectPoints, 3);
+    rect2->toggleDefaultVisualizer();
+    rect2->sample(500);
+    this->scene()->insert(rect2);
+  }
+
+  // Third rectangle shape (shifted up by 4 along the y axis)
+  {
+    float offsetY = 6.0f;
+    GMlib::DVector<GMlib::Vector<float, 3>> rectPoints(4, GMlib::Vector<float, 3>(0.0f, 0.0f, 0.0f));
+    rectPoints[0] = GMlib::Vector<float, 3>(-1.0f, offsetY - 1.0f, 0.0f);
+    rectPoints[1] = GMlib::Vector<float, 3>( 1.0f, offsetY - 1.0f, 0.0f);
+    rectPoints[2] = GMlib::Vector<float, 3>( 1.0f, offsetY + 1.0f, 0.0f);
+    rectPoints[3] = GMlib::Vector<float, 3>(-1.0f, offsetY + 1.0f, 0.0f);
+
+    auto rect3 = new ClosedSubdivisionCurve(rectPoints, 2);
+    rect3->toggleDefaultVisualizer();
+    rect3->sample(500);
+    this->scene()->insert(rect3);
+  }
 }
 
 void Scenario::cleanupScenario()
